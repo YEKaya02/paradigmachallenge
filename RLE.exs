@@ -28,13 +28,51 @@ defmodule RLECompress do
   end
 end
 
+# Een module om naar een bestand te schrijven.
+defmodule FileWriter do
+  def write_to_file(text) do
+    case File.write("output.txt", text) do
+      :ok ->
+        IO.puts("Ouput written to output.txt")
+
+      # Hier wordt met pattern matching gekeken welke error het is en aan de hand daarvan krijgt de gebruiker nuttige output.
+      {:error, :enoent} ->
+        IO.puts("A component of the file name does not exist (enoent)")
+
+      {:error, :enospc} ->
+        IO.puts("There is no space left on the device (enospc)")
+
+      {:error, :eacces} ->
+        IO.puts("Missing permission for writing the file or searching one of the parent directories (eacces)")
+
+      {:error, :eisdir} ->
+        IO.puts("The named file is a directory (eisdir)")
+
+      {:error, :enotdir} ->
+        IO.puts("A component of the file name is not a directory (enotdir)")
+
+      {:error, error} ->
+        IO.puts(error)
+    end
+  end
+end
+
+
 # Hier wordt aan de hand van pattern matching een bestand ingelezen. De text uit het bestand wordt vervolgens in een array gezet.
+# De compress functie wordt op die array aangeroepen. Daarna wordt de output geschreven naar een bestand.
 case File.read("loremipsum.txt") do
   {:ok, contents} ->
     compressed_text = RLECompress.compress(String.graphemes(contents))
-    IO.inspect(compressed_text)
+    # Omdat de resultaten steeds achter elkaar in de lijst komen moeten ze weer omgedraaid worden.
+    compressed_text = Enum.reverse(compressed_text)
+    # In de list staat de data als [{char, count}, {char, count}], met de map functie en een lambda zetten we dit om naar een list van strings.
+    compressed_text = Enum.map(compressed_text, fn {char, count} -> "#{char}#{count}" end)
+    # Zet de list om naar een string met Enum.join.
+    compressed_text = Enum.join(compressed_text)
 
+    FileWriter.write_to_file(compressed_text)
 
+  # Hier wordt met pattern matching gekeken welke error het is en aan de hand daarvan krijgt de gebruiker nuttige output.
   {:error, :enoent} ->
     IO.puts("File does not exits (enoent)")
 
