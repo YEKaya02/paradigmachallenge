@@ -21,6 +21,12 @@ defmodule RLECompress do
     compress(tail, char, count + 1, accumaltor_list)
   end
 
+  # Omdat we de recursie beginnen met een count waarde van 0 en een char van nil checken we hier of count 0 is.
+  # Als dat zo is voegen we het niet toe aan de lijst.
+  def compress([new_char | tail], char, 0, accumaltor_list) do
+    compress(tail, new_char, 1, accumaltor_list)
+  end
+
   # Hier wordt pattern matching toegepast om te checken of char niet overeenkomt met de head, een nieuwe char dus.
   # De char en hoevaak die voorkwam wordt opgeslagen in de list en de functie wordt opnieuw geroepen.
   def compress([new_char | tail], char, count, accumaltor_list) do
