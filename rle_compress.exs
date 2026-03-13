@@ -23,7 +23,7 @@ defmodule RLECompress do
 
   # Omdat we de recursie beginnen met een count waarde van 0 en een char van nil checken we hier of count 0 is.
   # Als dat zo is voegen we het niet toe aan de lijst.
-  def compress([new_char | tail], char, 0, accumaltor_list) do
+  def compress([new_char | tail], _char, 0, accumaltor_list) do
     compress(tail, new_char, 1, accumaltor_list)
   end
 
@@ -66,7 +66,7 @@ end
 
 # Hier wordt aan de hand van pattern matching een bestand ingelezen. De text uit het bestand wordt vervolgens in een array gezet.
 # De compress functie wordt op die array aangeroepen. Daarna wordt de output geschreven naar een bestand.
-case File.read("loremipsum.txt") do
+case File.read("input.txt") do
   {:ok, contents} ->
     compressed_text = RLECompress.compress(String.graphemes(contents))
     # Omdat de resultaten steeds achter elkaar in de lijst komen moeten ze weer omgedraaid worden.
