@@ -21,7 +21,10 @@ end
 # Hier wordt aan de hand van pattern matching een bestand ingelezen. De text uit het bestand wordt vervolgens in een array gezet.
 case File.read("output.txt") do
   {:ok, contents} ->
-    IO.inspect(RLEDecompress.decompress(String.graphemes(contents)))
+    decompressed_text = RLEDecompress.decompress(String.graphemes(contents))
+    # Omdat de resultaten steeds achter elkaar in de lijst komen moeten ze weer omgedraaid worden.
+    decompressed_text = Enum.reverse(decompressed_text)
+    IO.puts(List.to_string(decompressed_text))
 
   # Hier wordt met pattern matching gekeken welke error het is en aan de hand daarvan krijgt de gebruiker nuttige output.
   {:error, :enoent} ->
